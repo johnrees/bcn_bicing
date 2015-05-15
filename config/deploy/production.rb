@@ -2,8 +2,6 @@ set :stage, :production
 set :branch, "master"
 set :server_name, "bicing.johnre.es"
 
-set :full_app_name, "#{fetch(:application)}_#{fetch(:stage)}"
-set :deploy_to, "/home/#{fetch(:deploy_user)}/apps/#{fetch(:full_app_name)}"
 set :rails_env, :production
 set :unicorn_worker_count, 5
 set :enable_ssl, false
@@ -13,7 +11,7 @@ set :enable_ssl, false
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server ENV['production_server'], user: ENV['deploy_user'], roles: %w{app db web}
+server '213.219.36.200', user: 'deployer', roles: %w{app db web}
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 

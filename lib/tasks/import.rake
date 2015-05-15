@@ -8,8 +8,11 @@ namespace :import do
 
     while true do
       url = "http://wservice.viabicing.cat/getstations.php?v=1"
-      xml = Ox.parse(open(url).read)
-
+      begin
+        xml = Ox.parse(open(url).read)
+      rescue SocketError
+        next
+      end
       poll_time = Time.at(xml.bicing_stations.locate("updatetime").first.nodes.first.value.to_i).utc
 
       changed_ids = []
@@ -42,11 +45,11 @@ namespace :import do
       if changed_ids.any?
         changed_ids = changed_ids.join('/')
         puts changed_ids
-        `curl http://squirrul-faye.herokuapp.com/faye -d 'message={"channel":"/bikes", "data": "#{changed_ids}" }'`
+        # `curl http://squirrul-faye.herokuapp.com/faye -d 'message={"channel":"/bikes", "data": "#{changed_ids}" }'`
       else
         puts "fail"
       end
-      sleep(20)
+      sleep(30)
 
     end
   end

@@ -2,11 +2,20 @@
 lock '3.4.0'
 
 set :application, 'bcn_bicing'
-set :deploy_user, ENV['deploy_user']
+set :deploy_user, 'deployer'
+set :repo_url, "git@github.com:johnrees/#{fetch(:application)}.git"
+
+set :full_app_name, "#{fetch(:application)}_#{fetch(:stage)}"
+set :deploy_to, "/home/#{fetch(:deploy_user)}/apps/#{fetch(:full_app_name)}"
+
+# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+
+# set :assets_roles, [:app]
 
 # setup repo details
 set :scm, :git
-set :repo_url, "git@github.com:#{github_user}/#{application}.git"
+set :rbenv_path, "/home/#{fetch(:deploy_user)}/.rbenv"
+# set :use_sudo, false
 
 # setup rvm.
 set :rbenv_type, :system
@@ -14,14 +23,22 @@ set :rbenv_ruby, '2.2.2'
 set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 
+# Default value for :pty is false
+set :pty, true
+
 # how many old releases do we want to keep
 set :keep_releases, 5
 
 # files we want symlinking to specific entries in shared.
+# set :linked_files, %w{config/database.yml config/application.yml}
 set :linked_files, %w{config/database.yml config/application.yml}
 
 # dirs we want symlinking to shared
+# set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 # what specs should be run before deployment is allowed to
 # continue, see lib/capistrano/tasks/run_tests.cap
@@ -32,12 +49,13 @@ set :tests, []
 # for details of operations
 set(:config_files, %w(
   nginx.conf
-  database.example.yml
-  log_rotation
-  monit
   unicorn.rb
   unicorn_init.sh
+  log_rotation
+  monit
+  database.example.yml
 ))
+#
 
 # which config files should be made executable after copying
 # by deploy:setup_config
@@ -59,7 +77,7 @@ set(:symlinks, [
   },
   {
     source: "log_rotation",
-   link: "/etc/logrotate.d/#{fetch(:full_app_name)}"
+    link: "/etc/logrotate.d/#{fetch(:full_app_name)}"
   },
   {
     source: "monit",
@@ -74,12 +92,23 @@ set(:symlinks, [
 # and when for `cap stage deploy`
 
 namespace :deploy do
+
+  # after :restart, :clear_cache do
+  #   on roles(:web), in: :groups, limit: 3, wait: 10 do
+  #     # Here we can do anything such as:
+  #     # within release_path do
+  #     #   execute :rake, 'cache:clear'
+  #     # end
+  #   end
+  # end
+
   # make sure we're deploying what we think we're deploying
   before :deploy, "deploy:check_revision"
   # only allow a deploy with passing tests to deployed
   before :deploy, "deploy:run_tests"
   # compile assets locally then rsync
   after 'deploy:symlink:shared', 'deploy:compile_assets_locally'
+
   after :finishing, 'deploy:cleanup'
 
   # remove the default nginx configuration as it will tend
