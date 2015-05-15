@@ -6,7 +6,7 @@ namespace :import do
   desc "import data from bicing website"
   task :latest => :environment do
 
-    while true do
+    # while true do
       url = "http://wservice.viabicing.cat/getstations.php?v=1"
       begin
         xml = Ox.parse(open(url).read)
@@ -49,8 +49,7 @@ namespace :import do
       else
         puts "fail"
       end
-      sleep(30)
-
-    end
+    #   sleep(30)
+    # end
   end
 end
