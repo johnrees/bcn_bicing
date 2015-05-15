@@ -23,10 +23,10 @@ check process unicorn_worker_<%= (5000 + worker).to_s %>_<%= application %>_
 
 check process importer with pidfile <%= current_path %>/tmp/pids/importer.pid
   start program = "/etc/init.d/importer start"
-  stop_program = "/etc/init.d/importer stop"
+  stop program = "/etc/init.d/importer stop"
 
-  if totalmem is greater than 60.0 MB for 5 cycles then restart       # eating up memory?
-  if cpu is greater than 50% for 2 cycles then alert                  # send an email to admin
+  if totalmem is greater than 100.0 MB for 5 cycles then restart       # eating up memory?
+  if cpu is greater than 60% for 2 cycles then alert                  # send an email to admin
   if cpu is greater than 80% for 3 cycles then restart                # hung process?
   if loadavg(5min) greater than 10 for 8 cycles then restart          # bad, bad, bad
   if 3 restarts within 5 cycles then timeout                         # something is wrong, call the sys-admin
