@@ -37,8 +37,6 @@ set :linked_files, %w{config/database.yml config/application.yml}
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
-
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
@@ -56,6 +54,7 @@ set(:config_files, %w(
   log_rotation
   monit
   database.example.yml
+  importer.sh
 ))
 #
 
@@ -63,6 +62,7 @@ set(:config_files, %w(
 # by deploy:setup_config
 set(:executable_config_files, %w(
   unicorn_init.sh
+  importer.sh
 ))
 
 # files which need to be symlinked to other parts of the
@@ -84,6 +84,10 @@ set(:symlinks, [
   {
     source: "monit",
     link: "/etc/monit/conf.d/#{fetch(:full_app_name)}.conf"
+  },
+  {
+    source: "importer.sh",
+    link: "/etc/init.d/importer"
   }
 ])
 

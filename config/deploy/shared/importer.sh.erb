@@ -1,0 +1,18 @@
+#!/bin/bash
+export PATH=/home/deployer/.rbenv/shims:/home/deployer/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+
+case $1 in
+   start)
+      cd <%= current_path %>;
+      echo $$ > <%= current_path %>/tmp/importer_master.pid
+      /home/deployer/.rbenv/shims/rake import:latest RAILS_ENV=production
+      ;;
+    stop)
+      kill `cat <%= current_path %>/tmp/importer.ppid`
+      kill `cat <%= current_path %>/tmp/importer.pid`
+      kill `cat <%= current_path %>/tmp/importer_master.pid`
+      ;;
+    *)
+      echo "usage: importer {start|stop}" ;;
+esac
+exit 0
