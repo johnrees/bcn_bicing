@@ -30,9 +30,10 @@
 var graph = new Rickshaw.Graph( {
         element: document.querySelector("#chart"),
         width: 800,
-        height: 240,
+        height: 400,
+        renderer: 'scatterplot',
         series: [ {
-                data: <%= raw @readings.reverse.to_json %>,
+                data: <%= raw @readings.to_json %>,
                 color: 'steelblue'
         } ]
 } );

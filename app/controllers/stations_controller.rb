@@ -3,6 +3,6 @@ class StationsController < ApplicationController
   def show
     @station = Station.find(params[:id])
 
-    @readings = @station.recordings.map{|r| {x: r.polled_at.to_i, y: r.bikes_count } }
+    @readings = @station.recordings.order('polled_at asc').where('polled_at > ?', (params[:hours].try(:to_i) || 4).hours.ago).map{|r| {x: r.polled_at.to_i, y: r.bikes_count } }
   end
 end
