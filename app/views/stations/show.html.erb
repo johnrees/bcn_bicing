@@ -5,6 +5,9 @@
 <script src="https://rawgithub.com/shutterstock/rickshaw/master/rickshaw.min.js"></script>
 
 <style>
+.rickshaw_graph svg {
+  background: #BEBEBE;
+}
 #chart_container {
         position: relative;
         font-family: Arial, Helvetica, sans-serif;
@@ -21,6 +24,8 @@
 }
 </style>
 
+<h1><%= @station %></h1>
+
 <div id="chart_container">
         <div id="y_axis"></div>
         <div id="chart"></div>
@@ -28,24 +33,26 @@
 
 <script>
 var graph = new Rickshaw.Graph( {
-        element: document.querySelector("#chart"),
-        width: 800,
-        height: 400,
-        // renderer: 'fill',
-        interpolation: 'step-after',
-        series: [ {
-                data: <%= raw @readings.to_json %>,
-                color: 'steelblue'
-        } ]
+  element: document.querySelector("#chart"),
+  width: 800,
+  height: 400,
+  min: 0,
+  max: <%= @station.total_slots %>,
+  // renderer: 'fill',
+  interpolation: 'step-after',
+  series: [ {
+    data: <%= raw @readings.to_json %>,
+    color: '#E3001B'
+  } ]
 } );
 
 var x_axis = new Rickshaw.Graph.Axis.Time( { graph: graph } );
 
 var y_axis = new Rickshaw.Graph.Axis.Y( {
-        graph: graph,
-        orientation: 'left',
-        tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-        element: document.getElementById('y_axis'),
+    graph: graph,
+    orientation: 'left',
+    tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+    element: document.getElementById('y_axis'),
 } );
 
 graph.render();
