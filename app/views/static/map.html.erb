@@ -34,8 +34,7 @@
 
     for (var i = 0; i < window.stations.length; i++) {
       var item = window.stations[i];
-      var marker = L.marker([item[1], item[2]]).addTo(map);
-      // .bindPopup("<h1>" + item[0] + "</h1> bikes: " + item[3] + " slots: " + item[4]);
+      var marker = L.marker([item[1], item[2]]).addTo(map).bindPopup("<table><tr><th colspan='2'>" + item[0] + "</th></tr><tr><td>available bikes:</td><td>" + item[3] + "</td></tr><tr><td>available spaces:</td><td>" + item[4] + "</td></tr></table>");
       window.markers[item[5]] = marker;
     }
 
