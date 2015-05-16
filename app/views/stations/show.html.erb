@@ -31,7 +31,8 @@ var graph = new Rickshaw.Graph( {
         element: document.querySelector("#chart"),
         width: 800,
         height: 400,
-        renderer: 'scatterplot',
+        // renderer: 'fill',
+        interpolation: 'step-after',
         series: [ {
                 data: <%= raw @readings.to_json %>,
                 color: 'steelblue'
